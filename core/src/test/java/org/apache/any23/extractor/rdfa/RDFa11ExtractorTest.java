@@ -17,14 +17,14 @@
 
 package org.apache.any23.extractor.rdfa;
 
+import java.io.IOException;
+
 import org.apache.any23.extractor.ExtractionException;
 import org.apache.any23.extractor.ExtractorFactory;
 import org.apache.any23.rdf.RDFUtils;
 import org.apache.any23.vocab.FOAF;
 import org.apache.any23.vocab.OGP;
 import org.apache.any23.vocab.OGPMusic;
-import org.junit.Assert;
-import org.junit.Test;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
@@ -33,8 +33,8 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.rio.RDFHandlerException;
 import org.eclipse.rdf4j.rio.RDFParseException;
-
-import java.io.IOException;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Reference test class for {@link RDFa11Extractor} class.
@@ -132,6 +132,13 @@ public class RDFa11ExtractorTest extends AbstractRDFaExtractorTestCase {
     @Test
     public void testIssue268And317() {
         assertExtract("/html/rdfa/rdfa-issue268-and-317.html");
+    }
+    
+    @Test
+    public void testIssue428() {
+        assertExtract("/html/rdfa/rdfa-issue428.html");
+        assertContains(null, RDFUtils.iri("http://schema.org/url"),
+                RDFUtils.iri("http://example.org/"));
     }
 
     /**
@@ -312,11 +319,6 @@ public class RDFa11ExtractorTest extends AbstractRDFaExtractorTestCase {
         assertContains(baseIRI, vOGP.video, RDFUtils.literal("http://example.com/bond/trailer.swf") );
     }
     
-    @Override
-    protected ExtractorFactory<?> getExtractorFactory() {
-        return new RDFa11ExtractorFactory();
-    }
-
     /**
      * Tests the correct support of alternate 
      * <a href="http://ogp.me/#types">Open Graph Protocol Object Types</a>
@@ -342,5 +344,10 @@ public class RDFa11ExtractorTest extends AbstractRDFaExtractorTestCase {
         );
         assertContains(baseIRI, vOGPMusic.musicAlbum, RDFUtils.literal("Tri-State") );
     }
+
+	@Override
+	protected ExtractorFactory<?> getExtractorFactory() {
+	    return new RDFa11ExtractorFactory();
+	}
 
 }
